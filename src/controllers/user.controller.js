@@ -100,4 +100,8 @@ const loginUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "user logged in successfully"));
 });
 
+const logoutUser = asyncHandler(async(req,res)=>{
+     
+})
+
 export { registerUser, loginUser };
