@@ -261,6 +261,31 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
       throw new ApiError(500, error.message || "Failed to update user avatar");
     }
   });
+
+const updateCoverImage=asyncHandler(async(req,res)=>{
+   try {
+     const coverImageLocalPath= req.file?.coverImage?.[0]?.path
+ if (!coverImageLocalPath) {
+     throw new ApiError(400,"Cover Image is missing")
+     
+ }
+ const uploadedCoverImage= await uploadOnCloudinary(coverImageLocalPath)
+ 
+ const updatedUser = User.findByIdAndUpdate(req.user?._id,{
+ $set:{coverImage:uploadedCoverImage.url}
+ },{
+     new:true
+ }).select("-password -refreshToken")
+ if(!updatedUser){
+     throw new ApiError(404,"user not found")
+ }
+ return res.
+ status(200)
+ .json(new ApiResponse(200,updatedUser,"User cover image uploaded"))
+   } catch (error) {
+    throw new ApiError(500,error.message,"failed to update cover image")
+   }
+})
   
 export {
   registerUser,
@@ -269,5 +294,7 @@ export {
   refreshAccessToken,
   changeCurrentPassword,
   getCurrentUser,
-  updateAccountDetail
+  updateAccountDetail,
+  updateUserAvatar,
+  updateCoverImage
 };
